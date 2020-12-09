@@ -8,22 +8,22 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
 
 /**
- * Class Main
+ * Class PermsSort
  * @package PermsSort
  *
  * @author  celis <celishere@gmail.com> <Telegram:@celishere>
- * @version 1.0.0
+ * @version 1.0.1
  * @since   1.0.0
  */
-class Main extends PluginBase {
+class PermsSort extends PluginBase {
 
-    private $list = [];
+    private static $groups = [];
 
     public function onLoad(): void {
         $this->saveResource('groups.yml');
 
         $preList = $this->getConfig()->get('groups');
-        $this->list = explode(",", $preList);
+        self::$groups = explode(",", $preList);
     }
 
     /**
@@ -38,8 +38,8 @@ class Main extends PluginBase {
      *
      * @return int
      */
-    public function getGroupId(string $group): int {
-        foreach ($this->list as $id => $value) {
+    private static function getGroupId(string $group): int {
+        foreach (self::$groups as $id => $value) {
             if ($value === $group) {
                 return $id;
             }
@@ -54,7 +54,7 @@ class Main extends PluginBase {
      *
      * @return bool
      */
-    public function isGroupLow(string $group, string $newGroup): bool {
-        return $this->getGroupId($group) < $this->getGroupId($newGroup) ? true : false;
+    public static function isGroupLow(string $group, string $newGroup): bool {
+        return self::getGroupId($group) < self::getGroupId($newGroup);
     }
 }
